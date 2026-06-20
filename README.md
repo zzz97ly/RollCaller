@@ -17,18 +17,47 @@
 
 ```
 RollCaller/
-├── src/scut/ui/
-│   ├── MainApp.java          ← 主窗口 + CardLayout + 导航按钮
-│   ├── ImportPanel.java      ← 导入面板（3种导入方式 + 学生列表）
-│   ├── RollCallPanel.java    ← 点名面板（姓名展示 + 反馈按钮）
-│   └── StatisticsPanel.java  ← 统计面板（JTable + 概览卡片）
-├── classes/                  ← 编译后的 class 文件
-├── lib/                      ← 第三方 jar（待放）
-├── data/.gitkeep            ← 数据目录占位
-├── README.md                ← 项目说明
-├── step.md                  ← 开发步骤
-├── .gitignore               ← Git 忽略规则
-└── LICENSE                  ← MIT 许可证
+│
+├── src/scut/                          ← 所有源码，按职责分层
+│   ├── entity/   Student.java         6.4K  实体层：学生数据模型
+│   ├── dao/      StudentDAO.java      6.6K  数据层：DB + 文件双存储
+│   ├── service/                       业务层：三大核心服务
+│   │   ├── ImportService.java         7.1K  导入（Excel/文本/手动）
+│   │   ├── RollCallService.java       5.8K  点名算法（正常+备用模式）
+│   │   └── StatisticsService.java     4.8K  统计（排名/汇总/答对率）
+│   ├── ui/                            表现层：Swing GUI
+│   │   ├── MainApp.java               5.9K  主窗口 + 导航切换
+│   │   ├── ImportPanel.java          12.6K  导入面板（对话框+表格）
+│   │   ├── RollCallPanel.java         7.9K  点名面板（姓名+反馈）
+│   │   └── StatisticsPanel.java      10.2K  统计面板（表格+柱状图）
+│   └── util/                          工具层
+│       ├── JDBCUtil.java              8.1K  SQLite 连接 + 通用 CRUD
+│       └── FileUtil.java              8.7K  JSON 读写（手写解析器）
+│
+├── lib/                               第三方依赖（12个jar，共33MB）
+│   ├── sqlite-jdbc-3.46.0.0.jar       SQLite 驱动
+│   ├── slf4j-api / slf4j-nop          日志框架
+│   ├── poi / poi-ooxml / poi-ooxml-lite  Excel 读写
+│   ├── commons-io / commons-compress / commons-collections4  POI 依赖
+│   ├── xmlbeans                       XML 解析
+│   └── log4j-api / log4j-core         日志实现
+│
+├── data/                              运行时生成数据
+│   ├── .gitkeep                       保持空目录被 git 追踪
+│   └── students.json                  学生数据 JSON 备份
+│
+├── bin/run.bat                        Windows 一键启动脚本
+├── classes/                           编译产物（gitignore）
+├── doc/                               JavaDoc 文档（javadoc 生成）
+├── img/                               图片资源（预留）
+│
+├── RollCaller.jar                     可执行 JAR 包（41KB）
+├── MANIFEST.MF                        JAR 清单（入口类+类路径）
+├── README.md                          项目说明文档
+├── step.md                            开发步骤记录
+├── LICENSE                            MIT 开源协议
+└── .gitignore                         Git 忽略规则
+
 
 
 ```
