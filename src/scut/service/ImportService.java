@@ -42,6 +42,9 @@ public class ImportService {
 
     private final StudentDAO studentDAO;
 
+    /**
+     * 构造导入服务，初始化数据访问层
+     */
     public ImportService() {
         this.studentDAO = StudentDAO.getInstance();
     }

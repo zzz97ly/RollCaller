@@ -22,6 +22,9 @@ public class StatisticsService {
 
     private final StudentDAO studentDAO;
 
+    /**
+     * 构造统计服务，初始化数据访问层
+     */
     public StatisticsService() {
         this.studentDAO = StudentDAO.getInstance();
     }
@@ -138,6 +141,13 @@ public class StatisticsService {
         /** 全班平均答对率 [0.0, 1.0] */
         public final double averageRate;
 
+        /**
+         * 构造班级统计汇总
+         * @param studentCount 学生总数
+         * @param totalCalled  全班被点名总次数
+         * @param totalCorrect 全班答对总次数
+         * @param averageRate  平均答对率 [0.0, 1.0]
+         */
         public Summary(int studentCount, int totalCalled, int totalCorrect, double averageRate) {
             this.studentCount = studentCount;
             this.totalCalled = totalCalled;

@@ -40,19 +40,29 @@ public class ImportPanel extends JPanel {
     /** 表格列名 */
     private static final String[] TABLE_COLUMNS = {"序号", "姓名"};
 
-    /** 状态消息颜色 */
+    /** 状态消息颜色（成功） */
     private static final Color COLOR_SUCCESS = new Color(46, 125, 50);
+    /** 状态消息颜色（失败） */
     private static final Color COLOR_ERROR = new Color(198, 40, 40);
 
+    /** 数据访问层 */
     private final StudentDAO studentDAO;
+    /** 导入服务 */
     private final ImportService importService;
-
+    /** 表格数据模型 */
     private final DefaultTableModel tableModel;
+    /** 学生列表表格 */
     private final JTable studentTable;
+    /** 状态消息标签 */
     private final JLabel statusLabel;
+    /** 学生数量标签 */
     private final JLabel countLabel;
+    /** 手动输入框 */
     private final JTextField manualInput;
 
+    /**
+     * 构造导入面板，初始化界面和事件绑定
+     */
     public ImportPanel() {
         this.studentDAO = StudentDAO.getInstance();
         this.importService = new ImportService();

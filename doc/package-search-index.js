@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"scut.dao"},{"l":"scut.entity"},{"l":"scut.service"},{"l":"scut.ui"},{"l":"scut.util"},{"l":"所有程序包","u":"allpackages-index.html"}];updateSearchResults();

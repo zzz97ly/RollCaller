@@ -43,12 +43,15 @@ public class MainApp extends JFrame {
 
     /** 三个功能面板 */
     private final ImportPanel importPanel;
+    /** 点名面板 */
     private final RollCallPanel rollCallPanel;
+    /** 统计面板 */
     private final StatisticsPanel statisticsPanel;
-
-    /** 当前激活的按钮，用于高亮显示 */
+    /** 导入按钮 */
     private final JButton btnImport;
+    /** 点名按钮 */
     private final JButton btnRollCall;
+    /** 统计按钮 */
     private final JButton btnStatistics;
 
     /**

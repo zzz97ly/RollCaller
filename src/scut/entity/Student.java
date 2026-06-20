@@ -101,34 +101,66 @@ public class Student implements Serializable {
 
     // ======================== Getter / Setter ========================
 
+    /**
+     * 获取学生 ID
+     * @return 学生 ID
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * 设置学生 ID
+     * @param id 学生 ID
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * 获取学生姓名
+     * @return 学生姓名
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 设置学生姓名
+     * @param name 学生姓名
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * 获取被点名总次数
+     * @return 被点名总次数
+     */
     public int getTotalCalled() {
         return totalCalled;
     }
 
+    /**
+     * 设置被点名总次数
+     * @param totalCalled 被点名总次数
+     */
     public void setTotalCalled(int totalCalled) {
         this.totalCalled = totalCalled;
     }
 
+    /**
+     * 获取答对次数
+     * @return 答对次数
+     */
     public int getCorrectCount() {
         return correctCount;
     }
 
+    /**
+     * 设置答对次数
+     * @param correctCount 答对次数
+     */
     public void setCorrectCount(int correctCount) {
         this.correctCount = correctCount;
     }

@@ -40,14 +40,24 @@ public class StatisticsPanel extends JPanel {
     /** 柱间距 */
     private static final int BAR_GAP = 12;
 
+    /** 统计服务 */
     private final StatisticsService statsService;
+    /** 表格数据模型 */
     private final DefaultTableModel tableModel;
+    /** 统计表格 */
     private final JTable statsTable;
+    /** 学生总数卡片 */
     private final JLabel cardStudentCount;
+    /** 平均答对率卡片 */
     private final JLabel cardAvgRate;
+    /** 总点名次数卡片 */
     private final JLabel cardTotalCalls;
+    /** 柱状图面板 */
     private final BarChartPanel barChart;
 
+    /**
+     * 构造统计面板，初始化界面并加载数据
+     */
     public StatisticsPanel() {
         this.statsService = new StatisticsService();
 

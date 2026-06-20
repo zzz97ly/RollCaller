@@ -41,6 +41,9 @@ public class RollCallService {
     /** 是否处于备用模式 */
     private boolean backupMode;
 
+    /**
+     * 构造点名服务，初始化随机数生成器和数据访问层
+     */
     public RollCallService() {
         this.random = new Random();
         this.studentDAO = StudentDAO.getInstance();

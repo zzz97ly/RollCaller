@@ -37,13 +37,22 @@ public class RollCallPanel extends JPanel {
     /** 点名服务 */
     private final RollCallService rollCallService;
 
+    /** 学生姓名标签 */
     private final JLabel studentNameLabel;
+    /** 连续未答对计数标签 */
     private final JLabel streakLabel;
+    /** 模式提示标签 */
     private final JLabel modeLabel;
+    /** 开始点名按钮 */
     private final JButton btnStart;
+    /** 答对按钮 */
     private final JButton btnCorrect;
+    /** 未答对按钮 */
     private final JButton btnIncorrect;
 
+    /**
+     * 构造点名面板，初始化界面和事件绑定
+     */
     public RollCallPanel() {
         this.rollCallService = new RollCallService();
 
