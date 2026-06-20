@@ -17,16 +17,20 @@
 
 ```
 RollCaller/
-├── src/                 # 源代码
-├── classes/             # 编译后的 class 文件
-├── doc/                 # 项目文档
-├── bin/                 # 启动批处理文件
-├── img/                 # 程序图片资源
-├── lib/                 # 第三方 jar 包
-├── data/                # 学生数据文件
-├── README.md
-├── .gitignore
-└── LICENSE
+├── src/scut/ui/
+│   ├── MainApp.java          ← 主窗口 + CardLayout + 导航按钮
+│   ├── ImportPanel.java      ← 导入面板（3种导入方式 + 学生列表）
+│   ├── RollCallPanel.java    ← 点名面板（姓名展示 + 反馈按钮）
+│   └── StatisticsPanel.java  ← 统计面板（JTable + 概览卡片）
+├── classes/                  ← 编译后的 class 文件
+├── lib/                      ← 第三方 jar（待放）
+├── data/.gitkeep            ← 数据目录占位
+├── README.md                ← 项目说明
+├── step.md                  ← 开发步骤
+├── .gitignore               ← Git 忽略规则
+└── LICENSE                  ← MIT 许可证
+
+
 ```
 
 ## 核心功能
