@@ -1,5 +1,8 @@
 package scut.ui;
 
+import scut.entity.Student;
+import scut.service.RollCallService;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -7,13 +10,11 @@ import java.awt.*;
 /**
  * 点名面板
  * <p>
- * 核心功能：
+ * 核心交互：
  * - 大面积显示被点名学生姓名
- * - 开始点名按钮（触发算法选择学生）
- * - 答对 / 未答对 反馈按钮
- * - 显示连续未答对计数
- * <p>
- * 点名算法由 {@link scut.service.RollCallService} 实现
+ * - 「开始点名」按钮触发算法选择学生
+ * - 「答对」和「未答对」按钮收集反馈
+ * - 显示连续未答对计数和备用模式提示
  *
  * @author zzz97ly
  */
@@ -25,59 +26,46 @@ public class RollCallPanel extends JPanel {
     /** 卡片背景 */
     private static final Color COLOR_CARD = Color.WHITE;
 
-    /** 答对按钮颜色 */
     private static final Color COLOR_CORRECT = new Color(76, 175, 80);
-
-    /** 未答对按钮颜色 */
     private static final Color COLOR_INCORRECT = new Color(244, 67, 54);
-
-    /** 开始点名按钮颜色 */
     private static final Color COLOR_START = new Color(33, 150, 243);
+    private static final Color COLOR_WARN = new Color(255, 152, 0);
 
-    /** 姓名显示区尺寸 */
-    private static final int NAME_CARD_WIDTH = 350;
+    private static final int NAME_CARD_WIDTH = 380;
     private static final int NAME_CARD_HEIGHT = 180;
 
-    /** 学生姓名标签（最大号字体） */
+    /** 点名服务 */
+    private final RollCallService rollCallService;
+
     private final JLabel studentNameLabel;
-
-    /** 连续未答对计数标签 */
     private final JLabel streakLabel;
-
-    /** 答对按钮 */
+    private final JLabel modeLabel;
+    private final JButton btnStart;
     private final JButton btnCorrect;
-
-    /** 未答对按钮 */
     private final JButton btnIncorrect;
 
-    /** 开始点名按钮 */
-    private final JButton btnStart;
-
-    /**
-     * 构造点名面板
-     */
     public RollCallPanel() {
+        this.rollCallService = new RollCallService();
+
         setLayout(new BorderLayout(20, 20));
         setBackground(COLOR_BG);
         setBorder(new EmptyBorder(25, 30, 25, 30));
 
-        // ========== 顶部标题 ==========
+        // ===== 顶部 =====
         JLabel titleLabel = new JLabel("课堂点名");
         titleLabel.setFont(new Font("Microsoft YaHei", Font.BOLD, 22));
         titleLabel.setForeground(new Color(60, 70, 85));
         add(titleLabel, BorderLayout.NORTH);
 
-        // ========== 中间：大面积显示学生姓名 ==========
+        // ===== 中间：姓名展示区 =====
         JPanel centerPanel = new JPanel(new GridBagLayout());
         centerPanel.setOpaque(false);
 
-        // 姓名卡片背景
         JPanel nameCard = new JPanel(new GridBagLayout());
         nameCard.setBackground(COLOR_CARD);
         nameCard.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(200, 210, 225), 1),
-                new EmptyBorder(20, 40, 20, 40)
-        ));
+                new EmptyBorder(20, 40, 20, 40)));
         nameCard.setPreferredSize(new Dimension(NAME_CARD_WIDTH, NAME_CARD_HEIGHT));
 
         studentNameLabel = new JLabel("准备点名");
@@ -85,59 +73,122 @@ public class RollCallPanel extends JPanel {
         studentNameLabel.setForeground(new Color(80, 90, 110));
         nameCard.add(studentNameLabel);
 
-        // 连续未答对提示
-        streakLabel = new JLabel("连续未答对：0 次");
+        // 模式提示
+        modeLabel = new JLabel("正常模式");
+        modeLabel.setFont(new Font("Microsoft YaHei", Font.PLAIN, 12));
+        modeLabel.setForeground(new Color(160, 170, 180));
+
+        // 连续未答对
+        streakLabel = new JLabel("连续未答对：0 / " + RollCallService.MAX_FAIL_STREAK);
         streakLabel.setFont(new Font("Microsoft YaHei", Font.PLAIN, 13));
         streakLabel.setForeground(new Color(160, 170, 180));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.insets = new Insets(8, 0, 8, 0);
-        gbc.gridy = 0;
-        centerPanel.add(nameCard, gbc);
-        gbc.gridy = 1;
-        centerPanel.add(streakLabel, gbc);
+        gbc.gridx = 0; gbc.insets = new Insets(6, 0, 6, 0);
+        gbc.gridy = 0; centerPanel.add(nameCard, gbc);
+        gbc.gridy = 1; centerPanel.add(modeLabel, gbc);
+        gbc.gridy = 2; centerPanel.add(streakLabel, gbc);
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // ========== 底部：操作按钮 ==========
+        // ===== 底部按钮 =====
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         bottomPanel.setOpaque(false);
 
-        // 开始点名按钮
         btnStart = createStyledButton("🎯 开始点名", COLOR_START, 160, 46);
+        btnStart.addActionListener(e -> doRollCall());
         bottomPanel.add(btnStart);
 
-        // 分隔线
         JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
         sep.setPreferredSize(new Dimension(1, 40));
-        sep.setForeground(new Color(210, 215, 225));
         bottomPanel.add(sep);
 
-        // 答对按钮
         btnCorrect = createStyledButton("✅ 答对", COLOR_CORRECT, 130, 46);
         btnCorrect.setEnabled(false);
+        btnCorrect.addActionListener(e -> doMarkCorrect());
         bottomPanel.add(btnCorrect);
 
-        // 未答对按钮
         btnIncorrect = createStyledButton("❌ 未答对", COLOR_INCORRECT, 130, 46);
         btnIncorrect.setEnabled(false);
+        btnIncorrect.addActionListener(e -> doMarkIncorrect());
         bottomPanel.add(btnIncorrect);
 
         add(bottomPanel, BorderLayout.SOUTH);
-
-        // TODO: 后续绑定按钮事件，连接 RollCallService
     }
 
-    /**
-     * 创建统一样式的按钮
-     *
-     * @param text   按钮文字
-     * @param color  背景颜色
-     * @param width  宽度
-     * @param height 高度
-     * @return 配置好的 JButton
-     */
+    // ======================== 按钮逻辑 ========================
+
+    private void doRollCall() {
+        try {
+            Student s = rollCallService.selectNextStudent();
+            studentNameLabel.setText(s.getName());
+            studentNameLabel.setForeground(new Color(40, 50, 65));
+            setFeedbackEnabled(true);
+
+            // 更新状态
+            updateStatusDisplay();
+
+            // 动画提示
+            studentNameLabel.setForeground(COLOR_START);
+            Timer timer = new Timer(600, e ->
+                    studentNameLabel.setForeground(new Color(40, 50, 65)));
+            timer.setRepeats(false);
+            timer.start();
+
+        } catch (IllegalStateException ex) {
+            JOptionPane.showMessageDialog(this,
+                    ex.getMessage(), "提示", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void doMarkCorrect() {
+        rollCallService.markCorrect();
+        studentNameLabel.setText(studentNameLabel.getText() + " ✅");
+        studentNameLabel.setForeground(COLOR_CORRECT);
+        finishFeedback();
+    }
+
+    private void doMarkIncorrect() {
+        rollCallService.markIncorrect();
+        studentNameLabel.setText(studentNameLabel.getText() + " ❌");
+        studentNameLabel.setForeground(COLOR_INCORRECT);
+        finishFeedback();
+    }
+
+    private void finishFeedback() {
+        setFeedbackEnabled(false);
+        updateStatusDisplay();
+        // 1.5 秒后恢复显示，方便看清结果
+        Timer timer = new Timer(1500, e -> {
+            Student s = rollCallService.getCurrentStudent();
+            if (s != null) {
+                studentNameLabel.setText(s.getName());
+                studentNameLabel.setForeground(new Color(40, 50, 65));
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    // ======================== UI 更新 ========================
+
+    private void updateStatusDisplay() {
+        int streak = rollCallService.getFailStreak();
+        boolean backup = rollCallService.isBackupMode();
+
+        streakLabel.setText("连续未答对：" + streak + " / " + RollCallService.MAX_FAIL_STREAK);
+        streakLabel.setForeground(streak >= RollCallService.MAX_FAIL_STREAK
+                ? COLOR_INCORRECT : new Color(160, 170, 180));
+
+        if (backup) {
+            modeLabel.setText("⚠ 备用模式 — 从答对多的同学中抽取");
+            modeLabel.setForeground(COLOR_WARN);
+        } else {
+            modeLabel.setText("正常模式 — 优先点名次数少的同学");
+            modeLabel.setForeground(new Color(160, 170, 180));
+        }
+    }
+
     private JButton createStyledButton(String text, Color color, int width, int height) {
         JButton button = new JButton(text);
         button.setFont(new Font("Microsoft YaHei", Font.BOLD, 15));
@@ -150,37 +201,9 @@ public class RollCallPanel extends JPanel {
         return button;
     }
 
-    /**
-     * 设置界面上显示的当前学生姓名
-     *
-     * @param name 学生姓名
-     */
-    public void setStudentName(String name) {
-        studentNameLabel.setText(name);
-        studentNameLabel.setForeground(new Color(40, 50, 65));
-    }
-
-    /**
-     * 设置答对/未答对按钮的可用状态
-     *
-     * @param enabled true 表示点名后可以反馈
-     */
-    public void setFeedbackEnabled(boolean enabled) {
+    private void setFeedbackEnabled(boolean enabled) {
         btnCorrect.setEnabled(enabled);
         btnIncorrect.setEnabled(enabled);
-    }
-
-    /**
-     * 更新连续未答对计数显示
-     *
-     * @param streak 连续未答对次数
-     */
-    public void setFailStreak(int streak) {
-        streakLabel.setText("连续未答对：" + streak + " 次");
-        if (streak >= 3) {
-            streakLabel.setForeground(new Color(244, 67, 54));
-        } else {
-            streakLabel.setForeground(new Color(160, 170, 180));
-        }
+        btnStart.setEnabled(!enabled);
     }
 }
