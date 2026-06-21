@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>课堂点名系统 - 导入学生</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", sans-serif; background: #f5f8fc; color: #3c4655; }
+        .nav { background: #4682b4; padding: 12px 30px; display: flex; gap: 20px; }
+        .nav a { color: white; text-decoration: none; font-size: 16px; padding: 6px 16px; border-radius: 6px; }
+        .nav a.active { background: rgba(255,255,255,0.25); }
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        h1 { margin-bottom: 20px; }
+        .card { background: white; border: 1px solid #d0d6e0; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .card h3 { margin-bottom: 12px; color: #4682b4; }
+        input[type="file"] { margin-right: 10px; }
+        textarea { width: 100%; height: 80px; padding: 10px; border: 2px solid #ccc; border-radius: 6px; font-size: 14px; }
+        button, .btn { background: #4682b4; color: white; border: none; padding: 8px 20px; border-radius: 6px;
+                       font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-del { background: #e74c3c; padding: 4px 12px; font-size: 12px; }
+        .btn-green { background: #27ae60; }
+        .btn-orange { background: #e67e22; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #4682b4; color: white; padding: 10px; font-weight: bold; }
+        td { padding: 8px 10px; border-bottom: 1px solid #e0e5ec; text-align: center; }
+        tr:hover { background: #f0f4f8; }
+        .msg { padding: 8px 16px; border-radius: 6px; margin-bottom: 12px; }
+        .msg-success { background: #d4edda; color: #155724; }
+        .msg-error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+<div class="nav">
+    <a href="/" class="active">导入学生</a>
+    <a href="/rollcall">点名</a>
+    <a href="/stats">统计</a>
+</div>
+<div class="container">
+    <h1>导入学生</h1>
+
+    <div th:if="${msg}" class="msg msg-success" th:text="${msg}"></div>
+    <div th:if="${error}" class="msg msg-error" th:text="${error}"></div>
+
+    <!-- 文件导入 -->
+    <div class="card">
+        <h3>从文件导入</h3>
+        <form th:action="@{/import/upload}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".xlsx,.txt">
+            <button type="submit" class="btn-green">上传导入</button>
+        </form>
+    </div>
+
+    <!-- 手动添加 -->
+    <div class="card">
+        <h3>手动添加学生</h3>
+        <form th:action="@{/import/manual}" method="post">
+            <textarea name="names" placeholder="输入学生姓名，多个用逗号或换行分隔"></textarea>
+            <button type="submit" class="btn-orange" style="margin-top:10px;">添加</button>
+        </form>
+    </div>
+
+    <!-- 学生列表 -->
+    <div class="card">
+        <h3>已导入学生（<span th:text="${students.size()}">0</span> 人）</h3>
+        <table>
+            <tr><th>序号</th><th>姓名</th><th>操作</th></tr>
+            <tr th:each="s,stat : ${students}">
+                <td th:text="${stat.count}">1</td>
+                <td th:text="${s.name}">张三</td>
+                <td><a th:href="@{/import/delete/{id}(id=${s.id})}" class="btn btn-del"
+                       onclick="return confirm('确定删除？')">删除</a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

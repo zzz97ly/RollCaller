@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>课堂点名系统 - 统计</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", sans-serif; background: #f5f8fc; color: #3c4655; }
+        .nav { background: #4682b4; padding: 12px 30px; display: flex; gap: 20px; }
+        .nav a { color: white; text-decoration: none; font-size: 16px; padding: 6px 16px; border-radius: 6px; }
+        .nav a.active { background: rgba(255,255,255,0.25); }
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        h1 { margin-bottom: 20px; }
+        .cards { display: flex; gap: 15px; margin-bottom: 20px; }
+        .card { background: white; border: 1px solid #d0d6e0; border-radius: 10px; padding: 16px 24px;
+                text-align: center; flex: 1; }
+        .card .num { font-size: 28px; font-weight: bold; color: #4682b4; }
+        .card .label { font-size: 13px; color: #a0aab5; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px;
+                overflow: hidden; border: 1px solid #d0d6e0; }
+        th { background: #4682b4; color: white; padding: 12px; font-weight: bold; }
+        td { padding: 10px; border-bottom: 1px solid #e0e5ec; text-align: center; }
+        tr:hover { background: #f0f4f8; }
+        .bar-wrap { width: 100px; height: 14px; background: #e0e5ec; border-radius: 7px;
+                    display: inline-block; overflow: hidden; vertical-align: middle; }
+        .bar-fill { height: 14px; border-radius: 7px; background: #27ae60; }
+        .bar-fill.low { background: #e67e22; }
+    </style>
+</head>
+<body>
+<div class="nav">
+    <a href="/">导入学生</a>
+    <a href="/rollcall">点名</a>
+    <a href="/stats" class="active">统计</a>
+</div>
+<div class="container">
+    <h1>统计展示</h1>
+
+    <!-- 概览卡片 -->
+    <div class="cards">
+        <div class="card">
+            <div class="num" th:text="${summary.studentCount}">0</div>
+            <div class="label">学生总数</div>
+        </div>
+        <div class="card">
+            <div class="num" th:text="${summary.totalCalled}">0</div>
+            <div class="label">总点名次数</div>
+        </div>
+        <div class="card">
+            <div class="num" th:text="${summary.totalCorrect}">0</div>
+            <div class="label">答对次数</div>
+        </div>
+        <div class="card">
+            <div class="num" th:text="${summary.averageRateFormatted}">0%</div>
+            <div class="label">平均答对率</div>
+        </div>
+    </div>
+
+    <!-- 数据表格 -->
+    <table>
+        <tr><th>序号</th><th>姓名</th><th>被点名次数</th><th>答对次数</th><th>答对率</th></tr>
+        <tr th:each="s,stat : ${students}">
+            <td th:text="${stat.count}">1</td>
+            <td th:text="${s.name}">张三</td>
+            <td th:text="${s.totalCalled}">0</td>
+            <td th:text="${s.correctCount}">0</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar-fill" th:classappend="${s.answerRate < 0.5} ? 'low'"
+                         th:style="'width:' + ${s.answerRate * 100} + '%'"></div>
+                </div>
+                <span th:text="${s.answerRateFormatted}" style="margin-left:8px;">0.0%</span>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

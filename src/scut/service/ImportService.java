@@ -2,6 +2,8 @@ package scut.service;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import scut.dao.StudentDAO;
 import scut.entity.Student;
 
@@ -23,6 +25,7 @@ import java.util.List;
  *
  * @author zzz97ly
  */
+@Service
 public class ImportService {
 
     /** Excel 支持的文件扩展名 */
@@ -40,14 +43,8 @@ public class ImportService {
     /** POI 未找到单元格时返回 */
     private static final CellType DEFAULT_CELL_TYPE = CellType.STRING;
 
-    private final StudentDAO studentDAO;
-
-    /**
-     * 构造导入服务，初始化数据访问层
-     */
-    public ImportService() {
-        this.studentDAO = StudentDAO.getInstance();
-    }
+    @Autowired
+    private StudentDAO studentDAO;
 
     // ======================== 文件导入 ========================
 

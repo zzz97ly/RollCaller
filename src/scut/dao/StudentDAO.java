@@ -1,5 +1,6 @@
 package scut.dao;
 
+import org.springframework.stereotype.Repository;
 import scut.entity.Student;
 import scut.util.FileUtil;
 import scut.util.JDBCUtil;
@@ -15,6 +16,7 @@ import java.util.List;
  *
  * @author zzz97ly
  */
+@Repository
 public class StudentDAO {
 
     /** 查询所有学生 */
@@ -45,22 +47,19 @@ public class StudentDAO {
     private static final String SQL_DELETE_ALL =
             "DELETE FROM student";
 
-    /** 单例实例 */
-    private static final StudentDAO INSTANCE = new StudentDAO();
-
     /** 当前内存中的学生列表缓存 */
     private List<Student> cache;
 
+    /** Spring 和 Swing 共用此构造 */
+    public StudentDAO() {
+    }
+
     /**
-     * 获取 DAO 单例
-     *
+     * 获取 DAO 实例（供 Swing UI 等非 Spring 管理的类使用）
      * @return StudentDAO 实例
      */
     public static StudentDAO getInstance() {
-        return INSTANCE;
-    }
-
-    private StudentDAO() {
+        return new StudentDAO();
     }
 
     // ======================== 读取 ========================

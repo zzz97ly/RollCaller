@@ -49,3 +49,4 @@ data/*
 build/
 dist/
 bin/*.bat
+apache-maven-3.9.6/

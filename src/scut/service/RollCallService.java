@@ -1,5 +1,7 @@
 package scut.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import scut.dao.StudentDAO;
 import scut.entity.Student;
 
@@ -18,6 +20,7 @@ import java.util.Random;
  *
  * @author zzz97ly
  */
+@Service
 public class RollCallService {
 
     /** 连续未答对次数阈值，达到后切换到备用模式 */
@@ -30,7 +33,8 @@ public class RollCallService {
     private final Random random;
 
     /** 数据访问层 */
-    private final StudentDAO studentDAO;
+    @Autowired
+    private StudentDAO studentDAO;
 
     /** 当前被点名的学生 */
     private Student currentStudent;
@@ -42,11 +46,10 @@ public class RollCallService {
     private boolean backupMode;
 
     /**
-     * 构造点名服务，初始化随机数生成器和数据访问层
+     * 构造点名服务，初始化随机数生成器
      */
     public RollCallService() {
         this.random = new Random();
-        this.studentDAO = StudentDAO.getInstance();
         this.failStreak = 0;
         this.backupMode = false;
     }

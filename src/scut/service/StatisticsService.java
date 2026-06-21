@@ -1,5 +1,7 @@
 package scut.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import scut.dao.StudentDAO;
 import scut.entity.Student;
 
@@ -18,16 +20,11 @@ import java.util.List;
  *
  * @author zzz97ly
  */
+@Service
 public class StatisticsService {
 
-    private final StudentDAO studentDAO;
-
-    /**
-     * 构造统计服务，初始化数据访问层
-     */
-    public StatisticsService() {
-        this.studentDAO = StudentDAO.getInstance();
-    }
+    @Autowired
+    private StudentDAO studentDAO;
 
     // ======================== 基础统计 ========================
 
