@@ -208,9 +208,9 @@ public class ImportService {
                 || lower.contains("名字")
                 || lower.contains("name")
                 || lower.contains("学生")
-                || lower.equals("序号")
-                || lower.equals("编号")
-                || lower.equals("no")
-                || lower.equals("id");
+                || "序号".equals(lower)
+                || "编号".equals(lower)
+                || "no".equals(lower)
+                || "id".equals(lower);
     }
 }

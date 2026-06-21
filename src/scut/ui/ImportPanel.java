@@ -184,7 +184,7 @@ public class ImportPanel extends JPanel {
     private void importFromFile(String type) {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
-                type.equals("xlsx") ? "Excel 文件" : "文本文件", type));
+                "xlsx".equals(type) ? "Excel 文件" : "文本文件", type));
         if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
             return;
         }
