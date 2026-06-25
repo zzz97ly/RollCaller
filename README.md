@@ -2,7 +2,7 @@
 
 ## 项目简介
 
-一个基于 Java 的课堂点名系统，支持从 Excel 或文本文件导入学生名单，根据历史点名数据智能选择学生，并提供统计展示。采用 GUI 界面，数据同时支持文件存储和 SQLite 数据库存储。
+一个基于 Java Swing 的课堂点名系统，支持从 Excel 或文本文件导入学生名单，根据历史点名数据智能选择学生，并提供统计展示。数据同时支持文件存储和 SQLite 数据库存储。开发分支 `web` 可切换为 Spring Boot Web 应用并部署至 Railway 云服务器。
 
 ## 开发环境要求
 
@@ -19,47 +19,33 @@
 RollCaller/
 │
 ├── src/scut/                          ← 所有源码，按职责分层
-│   ├── entity/   Student.java         6.4K  实体层：学生数据模型
-│   ├── dao/      StudentDAO.java      6.6K  数据层：DB + 文件双存储
-│   ├── service/                       业务层：三大核心服务
-│   │   ├── ImportService.java         7.1K  导入（Excel/文本/手动）
-│   │   ├── RollCallService.java       5.8K  点名算法（正常+备用模式）
-│   │   └── StatisticsService.java     4.8K  统计（排名/汇总/答对率）
-│   ├── ui/                            表现层：Swing GUI
-│   │   ├── MainApp.java               5.9K  主窗口 + 导航切换
-│   │   ├── ImportPanel.java          12.6K  导入面板（对话框+表格）
-│   │   ├── RollCallPanel.java         7.9K  点名面板（姓名+反馈）
-│   │   └── StatisticsPanel.java      10.2K  统计面板（表格+柱状图）
-│   └── util/                          工具层
-│       ├── JDBCUtil.java              8.1K  SQLite 连接 + 通用 CRUD
-│       └── FileUtil.java              8.7K  JSON 读写（手写解析器）
+│   ├── entity/   Student.java          实体层：学生数据模型
+│   ├── dao/      StudentDAO.java       数据层：DB + 文件双存储
+│   ├── service/                        业务层：三大核心服务
+│   │   ├── ImportService.java          导入（Excel/文本/手动）
+│   │   ├── RollCallService.java        点名算法（正常+备用模式）
+│   │   └── StatisticsService.java      统计（排名/汇总/答对率）
+│   ├── ui/                             表现层：Swing GUI
+│   │   ├── MainApp.java                主窗口 + 导航切换
+│   │   ├── ImportPanel.java            导入面板（对话框+表格）
+│   │   ├── RollCallPanel.java          点名面板（姓名+反馈）
+│   │   └── StatisticsPanel.java        统计面板（表格+柱状图）
+│   └── util/                           工具层
+│       ├── JDBCUtil.java               SQLite 连接 + 通用 CRUD
+│       └── FileUtil.java               JSON 读写（手写解析器）
 │
-├── lib/                               第三方依赖（12个jar，共33MB）
-│   ├── sqlite-jdbc-3.46.0.0.jar       SQLite 驱动
-│   ├── slf4j-api / slf4j-nop          日志框架
-│   ├── poi / poi-ooxml / poi-ooxml-lite  Excel 读写
-│   ├── commons-io / commons-compress / commons-collections4  POI 依赖
-│   ├── xmlbeans                       XML 解析
-│   └── log4j-api / log4j-core         日志实现
+├── lib/                                第三方依赖（12个jar）
+├── data/                               运行时生成（SQLite + JSON）
+├── bin/run.bat                         Windows 一键启动脚本
+├── doc/                                JavaDoc 文档 + 功能架构图 + 演示视频
+├── img/                                图片资源（预留）
 │
-├── data/                              运行时生成数据
-│   ├── .gitkeep                       保持空目录被 git 追踪
-│   └── students.json                  学生数据 JSON 备份
-│
-├── bin/run.bat                        Windows 一键启动脚本
-├── classes/                           编译产物（gitignore）
-├── doc/                               JavaDoc 文档（javadoc 生成）
-├── img/                               图片资源（预留）
-│
-├── RollCaller.jar                     可执行 JAR 包（41KB）
-├── MANIFEST.MF                        JAR 清单（入口类+类路径）
-├── README.md                          项目说明文档
-├── step.md                            开发步骤记录
-├── LICENSE                            MIT 开源协议
-└── .gitignore                         Git 忽略规则
-
-
-
+├── RollCaller.jar                      可执行 JAR 包
+├── MANIFEST.MF                         JAR 清单（入口类+类路径）
+├── README.md                           项目说明文档
+├── step.md                             开发步骤记录
+├── LICENSE                             MIT 开源协议
+└── .gitignore                          Git 忽略规则
 ```
 
 ## 核心功能
@@ -116,44 +102,15 @@ java -jar RollCaller.jar
 
 | 包名 | 说明 |
 |------|------|
-| `scut.entity` | 实体类（Student 等） |
-| `scut.ui` | GUI 界面类 |
-| `scut.service` | 业务逻辑（点名服务、统计服务、导入服务） |
-| `scut.dao` | 数据访问层 |
-| `scut.util` | 工具类（JDBCUtil、文件工具等） |
-
-## Web 版部署（Railway 免费云服务器）
-
-### 一键部署
-
-1. 注册 [Railway](https://railway.app) 账号（GitHub 直接登录）
-2. 点击 **New Project → Deploy from GitHub repo**
-3. 选择 `RollCaller` 仓库的 `web` 分支
-4. Railway 自动检测 Dockerfile → 构建 → 部署 → 分配公网 URL
-5. 浏览器打开分配的公网 URL 即可使用
-
-### 本地启动 Web 版
-
-```bash
-# 前提：项目根目录下有 apache-maven-3.9.6/
-apache-maven-3.9.6/bin/mvn spring-boot:run
-# 浏览器打开 http://localhost:8080
-```
-
-### 目录说明（Web 版）
-
-| 目录/文件 | 说明 |
-|-----------|------|
-| `pom.xml` | Maven 依赖配置 |
-| `Dockerfile` | 云部署 Docker 镜像定义 |
-| `src/scut/RollCallerApplication.java` | Spring Boot 入口 |
-| `src/scut/controller/` | Web 控制器（替代 Swing Panel） |
-| `src/main/resources/templates/` | Thymeleaf HTML 页面 |
+| `scut.entity` | 实体类（Student） |
+| `scut.dao` | 数据访问层（双存储） |
+| `scut.service` | 业务逻辑（导入/点名/统计） |
+| `scut.ui` | Swing 桌面 GUI 界面 |
+| `scut.util` | 工具类（JDBCUtil、FileUtil） |
 
 ## 技术栈
 
 - Java Swing — 桌面 GUI 界面
-- Spring Boot + Thymeleaf — Web 界面
 - Apache POI — Excel 文件读取
 - SQLite + JDBC — 数据库存储
 - 文件序列化（JSON）— 文件存储
