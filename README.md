@@ -19,47 +19,46 @@
 RollCaller/
 │
 ├── src/scut/                          ← 所有源码，按职责分层
-│   ├── entity/   Student.java         6.4K  实体层：学生数据模型
-│   ├── dao/      StudentDAO.java      6.6K  数据层：DB + 文件双存储
-│   ├── service/                       业务层：三大核心服务
-│   │   ├── ImportService.java         7.1K  导入（Excel/文本/手动）
-│   │   ├── RollCallService.java       5.8K  点名算法（正常+备用模式）
-│   │   └── StatisticsService.java     4.8K  统计（排名/汇总/答对率）
-│   ├── ui/                            表现层：Swing GUI
-│   │   ├── MainApp.java               5.9K  主窗口 + 导航切换
-│   │   ├── ImportPanel.java          12.6K  导入面板（对话框+表格）
-│   │   ├── RollCallPanel.java         7.9K  点名面板（姓名+反馈）
-│   │   └── StatisticsPanel.java      10.2K  统计面板（表格+柱状图）
-│   └── util/                          工具层
-│       ├── JDBCUtil.java              8.1K  SQLite 连接 + 通用 CRUD
-│       └── FileUtil.java              8.7K  JSON 读写（手写解析器）
+│   ├── entity/   Student.java          实体层：学生数据模型
+│   ├── dao/      StudentDAO.java       数据层：DB + 文件双存储
+│   ├── service/                        业务层：三大核心服务
+│   │   ├── ImportService.java          导入（Excel/文本/手动）
+│   │   ├── RollCallService.java        点名算法（正常+备用模式）
+│   │   └── StatisticsService.java      统计（排名/汇总/答对率）
+│   ├── controller/                     Web 控制器（Spring MVC）
+│   │   ├── ImportController.java       导入接口
+│   │   ├── RollCallController.java     点名接口
+│   │   └── StatisticsController.java   统计接口
+│   ├── ui/                             表现层：Swing GUI
+│   │   ├── MainApp.java                主窗口 + 导航切换
+│   │   ├── ImportPanel.java            导入面板（对话框+表格）
+│   │   ├── RollCallPanel.java          点名面板（姓名+反馈）
+│   │   └── StatisticsPanel.java        统计面板（表格+柱状图）
+│   ├── util/                           工具层
+│   │   ├── JDBCUtil.java               SQLite 连接 + 通用 CRUD
+│   │   └── FileUtil.java               JSON 读写（手写解析器）
+│   └── RollCallerApplication.java      Spring Boot 启动类
 │
-├── lib/                               第三方依赖（12个jar，共33MB）
-│   ├── sqlite-jdbc-3.46.0.0.jar       SQLite 驱动
-│   ├── slf4j-api / slf4j-nop          日志框架
-│   ├── poi / poi-ooxml / poi-ooxml-lite  Excel 读写
-│   ├── commons-io / commons-compress / commons-collections4  POI 依赖
-│   ├── xmlbeans                       XML 解析
-│   └── log4j-api / log4j-core         日志实现
+├── src/main/resources/                 Web 版资源
+│   ├── application.properties          服务配置
+│   └── templates/                      Thymeleaf 页面
+│       ├── import.html                 导入页面
+│       ├── rollcall.html               点名页面
+│       └── stats.html                  统计页面
 │
-├── data/                              运行时生成数据
-│   ├── .gitkeep                       保持空目录被 git 追踪
-│   └── students.json                  学生数据 JSON 备份
+├── lib/                                第三方依赖（12个jar）
+├── data/                               运行时生成（SQLite + JSON）
+├── bin/run.bat                         Windows 一键启动脚本
+├── doc/                                JavaDoc 文档 + 功能架构图 + 演示视频
+├── img/                                图片资源（预留）
 │
-├── bin/run.bat                        Windows 一键启动脚本
-├── classes/                           编译产物（gitignore）
-├── doc/                               JavaDoc 文档（javadoc 生成）
-├── img/                               图片资源（预留）
-│
-├── RollCaller.jar                     可执行 JAR 包（41KB）
-├── MANIFEST.MF                        JAR 清单（入口类+类路径）
-├── README.md                          项目说明文档
-├── step.md                            开发步骤记录
-├── LICENSE                            MIT 开源协议
-└── .gitignore                         Git 忽略规则
-
-
-
+├── pom.xml                             Maven 项目配置
+├── Dockerfile                          Railway 云部署定义
+├── MANIFEST.MF                         JAR 清单
+├── README.md                           项目说明文档
+├── step.md                             开发步骤记录
+├── LICENSE                             MIT 开源协议
+└── .gitignore                          Git 忽略规则
 ```
 
 ## 核心功能
@@ -116,11 +115,12 @@ java -jar RollCaller.jar
 
 | 包名 | 说明 |
 |------|------|
-| `scut.entity` | 实体类（Student 等） |
-| `scut.ui` | GUI 界面类 |
-| `scut.service` | 业务逻辑（点名服务、统计服务、导入服务） |
-| `scut.dao` | 数据访问层 |
-| `scut.util` | 工具类（JDBCUtil、文件工具等） |
+| `scut.entity` | 实体类（Student） |
+| `scut.dao` | 数据访问层（双存储） |
+| `scut.service` | 业务逻辑（导入/点名/统计） |
+| `scut.ui` | Swing 桌面 GUI 界面 |
+| `scut.controller` | Spring MVC Web 控制器 |
+| `scut.util` | 工具类（JDBCUtil、FileUtil） |
 
 ## Web 版部署（Railway 免费云服务器）
 
