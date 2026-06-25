@@ -69,6 +69,12 @@ RollCaller/
 3. **智能点名** — 优先选择被点名次数少的同学；连续 N 次未答对时切换为优选答对多的同学
 4. **统计展示** — 以表格/图表形式展示被点名次数、答对次数、答对率
 
+## 功能演示
+
+[▶ 点击观看功能演示视频](doc/功能演示.mp4)
+
+<video src="doc/功能演示.mp4" controls width="600"></video>
+
 ## 数据库配置
 
 使用 SQLite 数据库，无需额外安装或配置。首次运行时程序会自动创建数据库文件 `data/rollcaller.db`。
@@ -116,12 +122,41 @@ java -jar RollCaller.jar
 | `scut.dao` | 数据访问层 |
 | `scut.util` | 工具类（JDBCUtil、文件工具等） |
 
+## Web 版部署（Railway 免费云服务器）
+
+### 一键部署
+
+1. 注册 [Railway](https://railway.app) 账号（GitHub 直接登录）
+2. 点击 **New Project → Deploy from GitHub repo**
+3. 选择 `RollCaller` 仓库的 `web` 分支
+4. Railway 自动检测 Dockerfile → 构建 → 部署 → 分配公网 URL
+5. 浏览器打开分配的公网 URL 即可使用
+
+### 本地启动 Web 版
+
+```bash
+# 前提：项目根目录下有 apache-maven-3.9.6/
+apache-maven-3.9.6/bin/mvn spring-boot:run
+# 浏览器打开 http://localhost:8080
+```
+
+### 目录说明（Web 版）
+
+| 目录/文件 | 说明 |
+|-----------|------|
+| `pom.xml` | Maven 依赖配置 |
+| `Dockerfile` | 云部署 Docker 镜像定义 |
+| `src/scut/RollCallerApplication.java` | Spring Boot 入口 |
+| `src/scut/controller/` | Web 控制器（替代 Swing Panel） |
+| `src/main/resources/templates/` | Thymeleaf HTML 页面 |
+
 ## 技术栈
 
-- Java Swing / JavaFX — GUI 界面
+- Java Swing — 桌面 GUI 界面
+- Spring Boot + Thymeleaf — Web 界面
 - Apache POI — Excel 文件读取
 - SQLite + JDBC — 数据库存储
-- 文件序列化 — 文件存储
+- 文件序列化（JSON）— 文件存储
 
 ## License
 
